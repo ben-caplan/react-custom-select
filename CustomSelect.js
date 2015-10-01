@@ -1,5 +1,8 @@
 'use strict';
 
+//INCLUDE SELECT OPTION COMPONENT
+var SelectOption = require('./SelectOption');
+
 /*
  *  CUSTOM SELECT
  *  
@@ -13,11 +16,17 @@ var CustomSelect = React.createClass({
     return{
       options : this.props.options || {},
       value : this.props.value || '',
-      placeholder : this.props.placeholder || ''
+      placeholder : this.props.placeholder || '',
+      isFocused : false
     };
   },
   _onChange : function(e){
-    this.setState({value : this.props.options[e.target.selectedIndex].label});
+    this.setState({
+      value : this.props.options[e.target.selectedIndex].label,
+    });
+  },
+  _onFocusChange : function(){
+    this.setState({isFocused : !this.state.isFocused});
   },
   render : function(){
     //Scoped variables
@@ -29,14 +38,10 @@ var CustomSelect = React.createClass({
     if( value == '' ) value = options[0].value || (this.state.placeholder || '');
 
     return (
-      <div className="custom-select">
+      <div className={"custom-select" + (this.state.isFocused ? ' focus' : '')}>
         <div className={"display-copy" + (!this.state.value != '' ? ' empty' : '')}>{value}</div>
-        <select name={this.props.name} id={this.props.id || this.props.name} className="styled-select" onChange={this._onChange}>
-          { 
-            options.map(function(option, i){
-              return (<SelectOption selected={value && value==option.value} label={option.label} value={option.value} />);
-            })
-          }
+        <select name={this.props.name} id={this.props.id || this.props.name} className="styled-select" onChange={this._onChange} onFocus={this._onFocusChange} onBlur={this._onFocusChange}>
+          {options}
         </select>
       </div>
     );
